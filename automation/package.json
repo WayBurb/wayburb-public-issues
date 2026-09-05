@@ -1,0 +1,10 @@
+{
+  "name": "wayburb-feedback-automation",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "check": "node --check process-feedback.js",
+    "test": "node --test"
+  }
+}
