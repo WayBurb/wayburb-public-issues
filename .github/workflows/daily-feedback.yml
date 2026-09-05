@@ -1,0 +1,39 @@
+name: Daily WayBurb feedback triage
+
+on:
+  schedule:
+    # GitHub cron uses UTC. Brisbane is UTC+10 year-round.
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/daily-feedback.yml"
+      - "automation/**"
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+
+concurrency:
+  group: daily-wayburb-feedback
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: automation
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm test
+      - run: node process-feedback.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
